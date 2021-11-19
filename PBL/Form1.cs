@@ -110,7 +110,7 @@ namespace PBL
                 Zabbix zabbix = new Zabbix(txtUsername.Text, txtPassword.Text,"http://" +  s + "/zabbix/api_jsonrpc.php");
                 Boolean Logged = zabbix.login();
                 if (Logged)
-                {
+                { 
                     MessageBox.Show("Sai");
                 }
                 else
