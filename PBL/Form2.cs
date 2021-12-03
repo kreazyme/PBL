@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using ZabbixApi;
 
@@ -17,15 +18,16 @@ namespace PBL
     public partial class Form2 : Form
     {
         private int hostid;
+        Zabbix zabbix = new Zabbix("Admin", "zabbix", "http://192.168.96.143/zabbix/api_jsonrpc.php");
+        Response responseObj = null;
         public Form2()
         {
             InitializeComponent();
-            Zabbix zabbix = new Zabbix("Admin", "zabbix", "http://192.168.96.143/zabbix/api_jsonrpc.php");
             zabbix.login();
 
 
-
-            Response responseObj = zabbix.objectResponse("host.get", new
+            //get all host
+            responseObj = zabbix.objectResponse("host.get", new
             {
                 output = new String[] { "hostid", "host" },
                 selectInterfaces = new String[] { "interfaceid", "ip" },
@@ -33,6 +35,9 @@ namespace PBL
             foreach (dynamic data in responseObj.result)
             {
                 Host_Item item = new Host_Item();
+
+
+                //add host to CBB
                 item.Text = data.host;
                 item.Value = data.hostid;
                 CBB_ListHost.Items.Add(item);
@@ -40,8 +45,16 @@ namespace PBL
             hostid = Convert.ToInt32(responseObj.result[0].hostid);
             CBB_ListHost.SelectedIndex = 0;
 
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
 
 
+        public void LoadDatagridView()
+        {
             responseObj = zabbix.objectResponse("item.get", new
             {
                 output = new String[] { "itemid", "name", "description", "lastvalue" },
@@ -59,13 +72,14 @@ namespace PBL
             //    hostids = 10084,
             //});
             //chart1.Titles.Add(responseObj.result[0].name);
-
-
         }
 
-        private void panel2_Paint(object sender, PaintEventArgs e)
+        private void CBB_ListHost_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            dtgv1.Rows.Clear();
+            Host_Item emailServer = (Host_Item)CBB_ListHost.SelectedItem;
+            hostid = Convert.ToInt32(emailServer.Value.ToString());
+            LoadDatagridView();
         }
     }
 }
