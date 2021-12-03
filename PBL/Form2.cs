@@ -22,6 +22,9 @@ namespace PBL
             InitializeComponent();
             Zabbix zabbix = new Zabbix("Admin", "zabbix", "http://192.168.96.143/zabbix/api_jsonrpc.php");
             zabbix.login();
+
+
+
             Response responseObj = zabbix.objectResponse("host.get", new
             {
                 output = new String[] { "hostid", "host" },
@@ -36,26 +39,26 @@ namespace PBL
             }
             hostid = Convert.ToInt32(responseObj.result[0].hostid);
             CBB_ListHost.SelectedIndex = 0;
-            responseObj = zabbix.objectResponse("history.get", new
+
+
+
+            responseObj = zabbix.objectResponse("item.get", new
             {
-                hostids = 10460,
-                itemids = 38698,
-                limit = 10,
+                output = new String[] { "itemid", "name", "description", "lastvalue" },
+                hostids = 10084,
             });
-            int i = 0;
-            chart1.Series["line1"].XValueMember = "Thời gian";
+            //int i = 0;
+            //chart1.Series["line1"].XValueMember = "Thời gian";
 
             foreach (dynamic data in responseObj.result)
             {
-                i++;
-                int y = Convert.ToInt32(data.value);
-                chart1.Series["line1"].Points.AddXY(i, y);
+                dtgv1.Rows.Add(data.itemid, data.name, data.description, data.lastvalue);
             }
-            responseObj = zabbix.objectResponse("item.get", new
-            {
-                itemids = 38698,
-            });
-            chart1.Titles.Add(responseObj.result[0].name);
+            //responseObj = zabbix.objectResponse("item.get", new
+            //{
+            //    hostids = 10084,
+            //});
+            //chart1.Titles.Add(responseObj.result[0].name);
 
 
         }
