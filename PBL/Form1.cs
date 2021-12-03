@@ -117,6 +117,7 @@ namespace PBL
                 {
                     MessageBox.Show("Không thể đăng nhập vào Zabbix\n Sai tên đăng nhập hoặc mật khẩu");
                 }
+                zabbix.logout();
             }
             else
             {
