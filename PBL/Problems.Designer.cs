@@ -60,9 +60,9 @@
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(137, 54);
+            this.label1.Size = new System.Drawing.Size(419, 54);
             this.label1.TabIndex = 0;
-            this.label1.Text = "label1";
+            this.label1.Text = "Problems by severity";
             // 
             // dtgv1
             // 
@@ -114,28 +114,28 @@
             this.Column4.HeaderText = "Severity";
             this.Column4.MinimumWidth = 6;
             this.Column4.Name = "Column4";
-            this.Column4.Width = 125;
+            this.Column4.Width = 90;
             // 
             // Column1
             // 
             this.Column1.HeaderText = "eventID";
             this.Column1.MinimumWidth = 6;
             this.Column1.Name = "Column1";
-            this.Column1.Width = 125;
+            this.Column1.Width = 90;
             // 
             // Column2
             // 
             this.Column2.HeaderText = "Name";
             this.Column2.MinimumWidth = 6;
             this.Column2.Name = "Column2";
-            this.Column2.Width = 200;
+            this.Column2.Width = 270;
             // 
             // Column5
             // 
             this.Column5.HeaderText = "Time";
             this.Column5.MinimumWidth = 6;
             this.Column5.Name = "Column5";
-            this.Column5.Width = 140;
+            this.Column5.Width = 150;
             // 
             // Problems
             // 

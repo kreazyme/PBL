@@ -43,14 +43,29 @@ namespace PBL
             int i = 0;
             foreach (dynamic data in responseObj.result)
             {
-                dtgv1.Rows.Add(data.severity, data.eventid, data.name, data.clock);
-                String s = Problem_color[2];
+                String date = UnixTimestampToDateTime(Convert.ToDouble(data.clock));
+                dtgv1.Rows.Add(data.severity, data.eventid, data.name, date);
+
+
 
                 //set Text + Color Severity
                 dtgv1.Rows[i].Cells[0].Style.BackColor = ColorTranslator.FromHtml(Problem_color[(Convert.ToInt32(data.severity))]);
                 dtgv1.Rows[i].Cells[0].Value = Problem_array[(Convert.ToInt32(data.severity))];
                 i++;
             }
+        }
+
+
+        private String UnixTimestampToDateTime(double unixTime)
+        {
+            if (unixTime < 1007432428)
+            {
+                return "no data";
+            }
+            DateTime unixStart = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            long unixTimeStampInTicks = (long)(unixTime * TimeSpan.TicksPerSecond);
+            DateTime dt = new DateTime(unixStart.Ticks + unixTimeStampInTicks, System.DateTimeKind.Utc);
+            return dt.ToString();
         }
 
         private void Problems_Load(object sender, EventArgs e)

@@ -170,11 +170,12 @@
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dtgv1.DefaultCellStyle = dataGridViewCellStyle2;
             this.dtgv1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dtgv1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnF2;
+            this.dtgv1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dtgv1.GridColor = System.Drawing.Color.White;
             this.dtgv1.Location = new System.Drawing.Point(216, 100);
             this.dtgv1.MultiSelect = false;
             this.dtgv1.Name = "dtgv1";
+            this.dtgv1.ReadOnly = true;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -186,14 +187,18 @@
             this.dtgv1.RowHeadersVisible = false;
             this.dtgv1.RowHeadersWidth = 51;
             this.dtgv1.RowTemplate.Height = 24;
+            this.dtgv1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dtgv1.ShowEditingIcon = false;
             this.dtgv1.Size = new System.Drawing.Size(1118, 564);
             this.dtgv1.TabIndex = 6;
+            this.dtgv1.DoubleClick += new System.EventHandler(this.dtgv1_DoubleClick);
             // 
             // Column1
             // 
             this.Column1.HeaderText = "ItemID";
             this.Column1.MinimumWidth = 6;
             this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
             this.Column1.Width = 125;
             // 
             // Column2
@@ -201,6 +206,7 @@
             this.Column2.HeaderText = "Name";
             this.Column2.MinimumWidth = 6;
             this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
             this.Column2.Width = 200;
             // 
             // Column3
@@ -208,6 +214,7 @@
             this.Column3.HeaderText = "Description";
             this.Column3.MinimumWidth = 6;
             this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
             this.Column3.Width = 225;
             // 
             // Column4
@@ -215,6 +222,7 @@
             this.Column4.HeaderText = "Last value";
             this.Column4.MinimumWidth = 6;
             this.Column4.Name = "Column4";
+            this.Column4.ReadOnly = true;
             this.Column4.Width = 125;
             // 
             // Column5
@@ -222,6 +230,7 @@
             this.Column5.HeaderText = "Time";
             this.Column5.MinimumWidth = 6;
             this.Column5.Name = "Column5";
+            this.Column5.ReadOnly = true;
             this.Column5.Width = 140;
             // 
             // Form2

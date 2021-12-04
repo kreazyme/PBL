@@ -60,19 +60,25 @@ namespace PBL
                 output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock" },
                 hostids = 10084,
             });
-            //int i = 0;
-            //chart1.Series["line1"].XValueMember = "Thời gian";
 
             foreach (dynamic data in responseObj.result)
             {
+                String description = data.description, value = data.lastvalue;
                 String thoigian = UnixTimestampToDateTime(Convert.ToDouble(data.lastclock));
-                dtgv1.Rows.Add(data.itemid, data.name, data.description, data.lastvalue, thoigian);
+
+                //display if no data
+                if(description == "")
+                {
+                    description = "no data";
+                    if(value == "0")
+                    {
+                        value = "no data";
+                    }
+                }
+
+
+                dtgv1.Rows.Add(data.itemid, data.name, description, value, thoigian);
             }
-            //responseObj = zabbix.objectResponse("item.get", new
-            //{
-            //    hostids = 10084,
-            //});
-            //chart1.Titles.Add(responseObj.result[0].name);
         }
 
         private void CBB_ListHost_SelectedIndexChanged(object sender, EventArgs e)
@@ -124,6 +130,31 @@ namespace PBL
             }
             //Problems p = new Problems();
             //p.Show();
+        }
+
+        private void dtgv1_DoubleClick(object sender, EventArgs e)
+        {
+            int rowindex = dtgv1.CurrentCell.RowIndex;
+            String itemid = dtgv1.Rows[rowindex].Cells[0].Value.ToString();
+            responseObj = zabbix.objectResponse("history.get", new
+            {
+                itemids = itemid
+            });
+            if(responseObj.result.Count != 0)
+            {
+                //Graph g = new Graph()
+            }
+            else
+            {
+                //responseObj = zabbix.objectResponse("item.get", new
+                //{
+                //    itemids = itemid
+                //});
+                //foreach(dynamic data in responseObj.result)
+                //{
+                //    MessageBox.Show(data.toString());
+                //}
+            }
         }
     }
 }

@@ -182,6 +182,12 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Graph.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Graph.Designer.cs">
+      <DependentUpon>Graph.cs</DependentUpon>
+    </Compile>
     <Compile Include="Host_Item.cs" />
     <Compile Include="Problems.cs">
       <SubType>Form</SubType>
@@ -198,6 +204,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Graph.resx">
+      <DependentUpon>Graph.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Problems.resx">
       <DependentUpon>Problems.cs</DependentUpon>
