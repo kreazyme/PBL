@@ -57,7 +57,7 @@ namespace PBL
         {
             responseObj = zabbix.objectResponse("item.get", new
             {
-                output = new String[] { "itemid", "name", "description", "lastvalue" },
+                output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock" },
                 hostids = 10084,
             });
             //int i = 0;
@@ -65,7 +65,8 @@ namespace PBL
 
             foreach (dynamic data in responseObj.result)
             {
-                dtgv1.Rows.Add(data.itemid, data.name, data.description, data.lastvalue);
+                String thoigian = UnixTimestampToDateTime(Convert.ToDouble(data.lastclock));
+                dtgv1.Rows.Add(data.itemid, data.name, data.description, data.lastvalue, thoigian);
             }
             //responseObj = zabbix.objectResponse("item.get", new
             //{
@@ -80,6 +81,49 @@ namespace PBL
             Host_Item emailServer = (Host_Item)CBB_ListHost.SelectedItem;
             hostid = Convert.ToInt32(emailServer.Value.ToString());
             LoadDatagridView();
+        }
+
+
+        private String UnixTimestampToDateTime(double unixTime)
+        {
+            if(unixTime < 1007432428)
+            {
+                return "no data";
+            }
+            DateTime unixStart = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            long unixTimeStampInTicks = (long)(unixTime * TimeSpan.TicksPerSecond);
+            DateTime dt = new DateTime(unixStart.Ticks + unixTimeStampInTicks, System.DateTimeKind.Utc);
+            return dt.ToString();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Host_Item emailServer = (Host_Item)CBB_ListHost.SelectedItem;
+            if(Convert.ToInt32(emailServer.Value.ToString()) != hostid)
+            {
+                dtgv1.Rows.Clear();
+                hostid = Convert.ToInt32(emailServer.Value.ToString());
+                LoadDatagridView();
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            responseObj = zabbix.objectResponse("problem.get", new
+            {
+
+            });
+            foreach (dynamic data in responseObj.result)
+            {
+
+            }
+            //Problems p = new Problems();
+            //p.Show();
         }
     }
 }
