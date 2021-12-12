@@ -16,7 +16,8 @@ namespace PBL
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Graph("http://192.168.96.143/zabbix/api_jsonrpc.php", 38692));
+            Application.Run(new Graph("http://192.168.96.143/zabbix/api_jsonrpc.php", 38678));
+            //("http://192.168.96.143/zabbix/api_jsonrpc.php", 38692
         }
     }
 }

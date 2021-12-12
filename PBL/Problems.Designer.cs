@@ -118,7 +118,7 @@
             // 
             // Column1
             // 
-            this.Column1.HeaderText = "eventID";
+            this.Column1.HeaderText = "Hostname";
             this.Column1.MinimumWidth = 6;
             this.Column1.Name = "Column1";
             this.Column1.Width = 90;

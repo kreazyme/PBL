@@ -37,14 +37,32 @@ namespace PBL
             {
                 output = new String[]
                 {
-                    "name", "clock", "eventid", "severity"
-                }
-            });
+                    "name", "clock", "eventid", "severity",
+                },
+                //history = 4,
+            }) ;
             int i = 0;
             foreach (dynamic data in responseObj.result)
             {
                 String date = UnixTimestampToDateTime(Convert.ToDouble(data.clock));
-                dtgv1.Rows.Add(data.severity, data.eventid, data.name, date);
+                Zabbix c = new Zabbix("admin", "zabbix", "http://192.168.96.143/zabbix/api_jsonrpc.php");
+                c.login();
+                string hostname = null;
+                string s = data.eventid;
+                Response responseobj2 = c.objectResponse("event.get", new
+                {
+                    evetids = s,
+                    limit = 10,
+                    selectedhosts = new string[]
+                    {
+                        "name",
+                        "hostid",
+                    },
+
+                });
+                //hostname = responseobj2.result.hosts.name;
+                hostname = "unknown";
+                dtgv1.Rows.Add(data.severity, hostname, data.name, date);
 
 
 

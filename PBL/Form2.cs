@@ -17,12 +17,16 @@ namespace PBL
 {
     public partial class Form2 : Form
     {
+
+        private String ip_address = null;
         private int hostid;
-        Zabbix zabbix = new Zabbix("Admin", "zabbix", "http://192.168.96.143/zabbix/api_jsonrpc.php");
+        Zabbix zabbix = null;
         Response responseObj = null;
-        public Form2()
+        public Form2(String ip)
         {
             InitializeComponent();
+            this.ip_address = ip;
+            zabbix = new Zabbix("Admin", "zabbix", ip_address);
             zabbix.login();
 
 
@@ -142,7 +146,8 @@ namespace PBL
             });
             if(responseObj.result.Count != 0)
             {
-                //Graph g = new Graph()
+                Graph g = new Graph("http://192.168.96.143/zabbix/api_jsonrpc.php", 38692);
+                g.Show();
             }
             else
             {
