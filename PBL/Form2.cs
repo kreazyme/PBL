@@ -17,12 +17,16 @@ namespace PBL
 {
     public partial class Form2 : Form
     {
+
+        private String ip_address = null;
         private int hostid;
-        Zabbix zabbix = new Zabbix("Admin", "zabbix", "http://192.168.96.143/zabbix/api_jsonrpc.php");
+        Zabbix zabbix = null;
         Response responseObj = null;
-        public Form2()
+        public Form2(String ip)
         {
             InitializeComponent();
+            this.ip_address = ip;
+            zabbix = new Zabbix("Admin", "zabbix", ip_address);
             zabbix.login();
 
 
@@ -57,21 +61,28 @@ namespace PBL
         {
             responseObj = zabbix.objectResponse("item.get", new
             {
-                output = new String[] { "itemid", "name", "description", "lastvalue" },
+                output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock" },
                 hostids = 10084,
             });
-            //int i = 0;
-            //chart1.Series["line1"].XValueMember = "Thời gian";
 
             foreach (dynamic data in responseObj.result)
             {
-                dtgv1.Rows.Add(data.itemid, data.name, data.description, data.lastvalue);
+                String description = data.description, value = data.lastvalue;
+                String thoigian = UnixTimestampToDateTime(Convert.ToDouble(data.lastclock));
+
+                //display if no data
+                if(description == "")
+                {
+                    description = "no data";
+                    if(value == "0")
+                    {
+                        value = "no data";
+                    }
+                }
+
+
+                dtgv1.Rows.Add(data.itemid, data.name, description, value, thoigian);
             }
-            //responseObj = zabbix.objectResponse("item.get", new
-            //{
-            //    hostids = 10084,
-            //});
-            //chart1.Titles.Add(responseObj.result[0].name);
         }
 
         private void CBB_ListHost_SelectedIndexChanged(object sender, EventArgs e)
@@ -80,6 +91,75 @@ namespace PBL
             Host_Item emailServer = (Host_Item)CBB_ListHost.SelectedItem;
             hostid = Convert.ToInt32(emailServer.Value.ToString());
             LoadDatagridView();
+        }
+
+
+        private String UnixTimestampToDateTime(double unixTime)
+        {
+            if(unixTime < 1007432428)
+            {
+                return "no data";
+            }
+            DateTime unixStart = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            long unixTimeStampInTicks = (long)(unixTime * TimeSpan.TicksPerSecond);
+            DateTime dt = new DateTime(unixStart.Ticks + unixTimeStampInTicks, System.DateTimeKind.Utc);
+            return dt.ToString();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Host_Item emailServer = (Host_Item)CBB_ListHost.SelectedItem;
+            if(Convert.ToInt32(emailServer.Value.ToString()) != hostid)
+            {
+                dtgv1.Rows.Clear();
+                hostid = Convert.ToInt32(emailServer.Value.ToString());
+                LoadDatagridView();
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            responseObj = zabbix.objectResponse("problem.get", new
+            {
+
+            });
+            foreach (dynamic data in responseObj.result)
+            {
+
+            }
+            //Problems p = new Problems();
+            //p.Show();
+        }
+
+        private void dtgv1_DoubleClick(object sender, EventArgs e)
+        {
+            int rowindex = dtgv1.CurrentCell.RowIndex;
+            String itemid = dtgv1.Rows[rowindex].Cells[0].Value.ToString();
+            responseObj = zabbix.objectResponse("history.get", new
+            {
+                itemids = itemid
+            });
+            if(responseObj.result.Count != 0)
+            {
+                Graph g = new Graph("http://192.168.96.143/zabbix/api_jsonrpc.php", 38692);
+                g.Show();
+            }
+            else
+            {
+                //responseObj = zabbix.objectResponse("item.get", new
+                //{
+                //    itemids = itemid
+                //});
+                //foreach(dynamic data in responseObj.result)
+                //{
+                //    MessageBox.Show(data.toString());
+                //}
+            }
         }
     }
 }
