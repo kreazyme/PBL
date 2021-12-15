@@ -14,18 +14,16 @@ namespace PBL
 {
     public partial class Graph : Form
     {
-        private static String ip_address;
         private static String Chartname = "";
         private static String valuetype = "3";
         private static int itemid;
         Zabbix zabbix = null;
         Response responseObj = null;
-        public Graph(String address, int id)
+        public Graph(Zabbix z, int id)
         {
             InitializeComponent();
-            ip_address = address;
+            zabbix = z;
             itemid = id;
-            zabbix = new Zabbix("Admin", "zabbix", ip_address);
             zabbix.login();
 
             LoadGraphName();
@@ -68,7 +66,7 @@ namespace PBL
                 s = data.clock;
                 i++;
             }
-            chart1.ChartAreas["ChartArea1"].AxisX.Title = "Time from " + UnixTimestampToDateTime(Convert.ToDouble(responseObj.result[0].clock)) + " to " + UnixTimestampToDateTime(Convert.ToDouble(s));
+            chart1.ChartAreas["ChartArea1"].AxisX.Title = "Time from "  + UnixTimestampToDateTime(Convert.ToDouble(s)) + " to " + UnixTimestampToDateTime(Convert.ToDouble(responseObj.result[0].clock));
 
         }
         private String UnixTimestampToDateTime(double unixTime)

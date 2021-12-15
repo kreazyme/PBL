@@ -14,20 +14,21 @@ namespace PBL
     public partial class Problems : Form
     {
         private static int hostid = 0;
-        Zabbix zabbix = new Zabbix("Admin", "zabbix", "http://192.168.96.143/zabbix/api_jsonrpc.php");
+        Zabbix zabbix = null;
         Response responseObj = null;
-        public Problems()
+        public Problems( Zabbix z)
         {
             InitializeComponent();
+            zabbix = z;
             zabbix.login();
             LoadProblems();
         }
-        public Problems(String address)
-        {
+        //public Problems(String address)
+        //{
 
-            InitializeComponent();
-            LoadProblems();
-        }
+        //    InitializeComponent();
+        //    LoadProblems();
+        //}
         public void LoadProblems()
         {
             String[] Problem_array = new string[] { "Not classified", "Infomation", "Warning", "Average", "High", "Disater" };
@@ -83,7 +84,9 @@ namespace PBL
             DateTime unixStart = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             long unixTimeStampInTicks = (long)(unixTime * TimeSpan.TicksPerSecond);
             DateTime dt = new DateTime(unixStart.Ticks + unixTimeStampInTicks, System.DateTimeKind.Utc);
-            return dt.ToString();
+
+            dt = dt.AddHours(7);
+            return (dt.Hour.ToString() + ":" + dt.Minute.ToString() + " " + dt.Day.ToString() + "/" + dt.Month.ToString() + "/" + dt.Year.ToString());
         }
 
         private void Problems_Load(object sender, EventArgs e)

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,42 +22,54 @@ namespace PBL
 
         private void txtIP4_TextChanged(object sender, EventArgs e)
         {
-            try
-            {
-                int i = Convert.ToInt32(txtIP1.Text);
-                if(i<0 || i > 256)
-                {
-                    txtIP4.Clear();
-                    MessageBox.Show("Wrong IP Address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch(Exception ex)
-            {
-                txtIP4.Clear();
-                MessageBox.Show("Wrong IP Address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
         }
 
         private void txtIP1_TextChanged(object sender, EventArgs e)
         {
-            try
-            {
-                int i = Convert.ToInt32(txtIP1.Text);
-                if (i < 0 || i > 256)
-                {
-                    txtIP1.Clear();
-                    MessageBox.Show("Wrong IP Address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                txtIP1.Clear();
-                MessageBox.Show("Wrong IP Address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
         }
 
         private void txtIP2_TextChanged(object sender, EventArgs e)
         {
+
+        }
+
+        private void txtIP3_TextChanged(object sender, EventArgs e)
+        {
+                
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            txtIP1.Clear();
+            txtIP2.Clear();
+            txtIP3.Clear();
+            txtIP4.Clear();
+            txtPassword.Clear();
+            txtUsername.Clear();
+            txtIP1.Focus();
+        }
+        private Zabbix zabbix;
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int i = Convert.ToInt32(txtIP3.Text);
+                if (i < 0 || i > 256)
+                {
+                    txtIP3.Clear();
+                    MessageBox.Show("Wrong IP Address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                txtIP3.Clear();
+                MessageBox.Show("Wrong IP Address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             try
             {
                 int i = Convert.ToInt32(txtIP2.Text);
@@ -71,39 +84,36 @@ namespace PBL
                 txtIP2.Clear();
                 MessageBox.Show("Wrong IP Address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void txtIP3_TextChanged(object sender, EventArgs e)
-        {
             try
             {
-                int i = Convert.ToInt32(txtIP3.Text);
+                int i = Convert.ToInt32(txtIP1.Text);
                 if (i < 0 || i > 256)
                 {
-                    txtIP3.Clear();
+                    txtIP1.Clear();
                     MessageBox.Show("Wrong IP Address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                txtIP3.Clear();
+                txtIP1.Clear();
                 MessageBox.Show("Wrong IP Address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
 
-        private void btnClear_Click(object sender, EventArgs e)
-        {
-            txtIP1.Clear();
-            txtIP2.Clear();
-            txtIP3.Clear();
-            txtIP4.Clear();
-            txtPassword.Clear();
-            txtUsername.Clear();
-            txtIP1.Focus();
-        }
+            try
+            {
+                int i = Convert.ToInt32(txtIP1.Text);
+                if (i < 0 || i > 256)
+                {
+                    txtIP4.Clear();
+                    MessageBox.Show("Wrong IP Address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                txtIP4.Clear();
+                MessageBox.Show("Wrong IP Address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
-        private void btnLogin_Click(object sender, EventArgs e)
-        {
             String s = txtIP1.Text + "." + txtIP2.Text + "." + txtIP3.Text + "." + txtIP4.Text;
             if (PingtoIP(s))
             {
@@ -111,7 +121,9 @@ namespace PBL
                 Boolean Logged = zabbix.login();
                 if (Logged)
                 {
-                    Form2 f = new Form2("http://" + s + "/zabbix/api_jsonrpc.php");
+
+                    zabbix = new Zabbix(txtUsername.Text.ToString(), txtPassword.Text.ToString(), "http://" + s + "/zabbix/api_jsonrpc.php");
+                    Form2 f = new Form2(zabbix);
                     this.Hide();
                     f.ShowDialog();
                     this.Show();
@@ -121,7 +133,7 @@ namespace PBL
                 {
                     MessageBox.Show("Cannot login to Zabbix\n Wrong username or password");
                 }
-                zabbix.logout();
+                //zabbix.logout();
             }
             else
             {
