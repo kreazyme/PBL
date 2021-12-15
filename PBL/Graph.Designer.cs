@@ -62,6 +62,7 @@
             // chart1
             // 
             this.chart1.BorderlineWidth = 0;
+            chartArea1.AxisX.LineWidth = 0;
             chartArea1.AxisX.TitleFont = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             chartArea1.AxisX2.TitleFont = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             chartArea1.BorderWidth = 0;
@@ -69,6 +70,7 @@
             this.chart1.ChartAreas.Add(chartArea1);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
             legend1.Name = "Legend1";
+            legend1.TitleFont = new System.Drawing.Font("Segoe UI Semibold", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(0, 91);
             this.chart1.Name = "chart1";

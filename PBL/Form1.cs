@@ -110,18 +110,22 @@ namespace PBL
                 Zabbix zabbix = new Zabbix(txtUsername.Text, txtPassword.Text,"http://" +  s + "/zabbix/api_jsonrpc.php");
                 Boolean Logged = zabbix.login();
                 if (Logged)
-                { 
-                    MessageBox.Show("Sai");
+                {
+                    Form2 f = new Form2("http://" + s + "/zabbix/api_jsonrpc.php");
+                    this.Hide();
+                    f.ShowDialog();
+                    this.Show();
+
                 }
                 else
                 {
-                    MessageBox.Show("Không thể đăng nhập vào Zabbix\n Sai tên đăng nhập hoặc mật khẩu");
+                    MessageBox.Show("Cannot login to Zabbix\n Wrong username or password");
                 }
                 zabbix.logout();
             }
             else
             {
-                MessageBox.Show("Không thể kết nối tới địa chỉ IP " + s + "\nThử lại với địa chỉ IP khác.", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("Cannot connect to this IP address " + s + "\nConnect with other IP.", "Error", MessageBoxButtons.OK);
             }
         }
 

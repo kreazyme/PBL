@@ -54,15 +54,19 @@ namespace PBL
             responseObj = zabbix.objectResponse("history.get", new
             {
                 itemids = itemid,
-                limit = 10,
+                limit = 25,
+                sortfield = "clock",
+                sortorder = "DESC",
                 history = valuetype
             });
             int i = 0;
             String s = null;
             foreach(dynamic data in responseObj.result)
             {
-                chart1.Series[Chartname].Points.AddXY(i, Convert.ToInt32(data.value));
+
+                chart1.Series[Chartname].Points.AddXY(UnixTimestampToHourMinutes(Convert.ToDouble(data.clock)), Convert.ToDouble(data.value));
                 s = data.clock;
+                i++;
             }
             chart1.ChartAreas["ChartArea1"].AxisX.Title = "Time from " + UnixTimestampToDateTime(Convert.ToDouble(responseObj.result[0].clock)) + " to " + UnixTimestampToDateTime(Convert.ToDouble(s));
 
@@ -77,6 +81,18 @@ namespace PBL
             long unixTimeStampInTicks = (long)(unixTime * TimeSpan.TicksPerSecond);
             DateTime dt = new DateTime(unixStart.Ticks + unixTimeStampInTicks, System.DateTimeKind.Utc);
             return dt.ToString();
+        }
+
+        private String UnixTimestampToHourMinutes(double unixTime)
+        {
+            if (unixTime < 1007432428)
+            {
+                return "no data";
+            }
+            DateTime unixStart = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            long unixTimeStampInTicks = (long)(unixTime * TimeSpan.TicksPerSecond);
+            DateTime dt = new DateTime(unixStart.Ticks + unixTimeStampInTicks, System.DateTimeKind.Utc);
+            return dt.Hour.ToString() + ":" + dt.Minute.ToString();
         }
     }
 }

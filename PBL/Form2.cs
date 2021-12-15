@@ -139,26 +139,38 @@ namespace PBL
         private void dtgv1_DoubleClick(object sender, EventArgs e)
         {
             int rowindex = dtgv1.CurrentCell.RowIndex;
-            String itemid = dtgv1.Rows[rowindex].Cells[0].Value.ToString();
-            responseObj = zabbix.objectResponse("history.get", new
+            if(dtgv1.Rows[rowindex].Cells[3].Value.ToString() == "no data")
             {
-                itemids = itemid
-            });
-            if(responseObj.result.Count != 0)
-            {
-                Graph g = new Graph("http://192.168.96.143/zabbix/api_jsonrpc.php", 38692);
-                g.Show();
+                MessageBox.Show("no data");
+                return;
             }
+
+            //get value type
+            String itemid = dtgv1.Rows[rowindex].Cells[0].Value.ToString();
+            responseObj = zabbix.objectResponse("item.get", new
+            {
+                output = new String[] { "value_type" },
+                itemids = itemid,
+            });
+            String valuetype = "";
+            foreach(dynamic data in responseObj.result)
+            {
+                valuetype = data.value_type;
+            }
+
+
+            //Show if not graph
+            if(valuetype == "1")
+            {
+                MessageBox.Show("Erroe");
+            }
+
+
+            //Show graph
             else
             {
-                //responseObj = zabbix.objectResponse("item.get", new
-                //{
-                //    itemids = itemid
-                //});
-                //foreach(dynamic data in responseObj.result)
-                //{
-                //    MessageBox.Show(data.toString());
-                //}
+                Graph g = new Graph("http://192.168.96.143/zabbix/api_jsonrpc.php", Convert.ToInt32(itemid));
+                g.Show();
             }
         }
     }
