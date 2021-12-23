@@ -18,7 +18,7 @@ namespace PBL
         Response responseObj = null;
         public Problems( Zabbix z)
         {
-            InitializeComponent();
+            InitializeComponent(); 
             zabbix = z;
             zabbix.login();
             LoadProblems();
