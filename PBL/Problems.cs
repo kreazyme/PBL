@@ -46,7 +46,7 @@ namespace PBL
             foreach (dynamic data in responseObj.result)
             {
                 String date = UnixTimestampToDateTime(Convert.ToDouble(data.clock));
-                Zabbix c = new Zabbix("admin", "zabbix", "http://192.168.96.143/zabbix/api_jsonrpc.php");
+                Zabbix c = zabbix;
                 c.login();
                 string hostname = null;
                 string s = data.eventid;

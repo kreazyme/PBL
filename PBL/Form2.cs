@@ -62,39 +62,36 @@ namespace PBL
                 output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock", "key_" },
                 hostids = host,
             });
-
             foreach (dynamic data in responseObj.result)
             {
-                String description = data.description, value = data.lastvalue;
-                String thoigian = UnixTimestampToDateTime(Convert.ToDouble(data.lastclock));
                 String key = data.key_;
                 string[] collection = key.Split('.');
-                if(collection.Length > 1)
+                if (collection.Length > 1)
                 {
-                    key = collection[0] + collection[1];
+                    key = collection[0] + "." + collection[1];
                 }
-
-
-                //display if no data
-                if (description == "")
+                for (int i = 0; i < cbbKey.Items.Count; i++)
                 {
-                    description = "no data";
-                    if(value == "0")
+                    string value = cbbKey.GetItemText(cbbKey.Items[i]);
+                    if(value == key)
                     {
-                        value = "no data";
+                        goto here;
                     }
                 }
-
-
-                dtgv1.Rows.Add(data.itemid, data.name, description, value, key, thoigian);
+                cbbKey.Items.Add(key);
+            here:
+                int x = 1;
             }
+            addDatagridview(responseObj.result);
+                
         }
 
         private void CBB_ListHost_SelectedIndexChanged(object sender, EventArgs e)
         {
             dtgv1.Rows.Clear();
             Host_Item emailServer = (Host_Item)CBB_ListHost.SelectedItem;
-            LoadDatagridView(Convert.ToInt32(emailServer.Value.ToString()));
+            hostid = Convert.ToInt32(emailServer.Value.ToString());
+            LoadDatagridView(hostid);
         }
 
 
@@ -225,61 +222,66 @@ namespace PBL
             MessageBox.Show("Coming soon", "Notification");
         }
 
-        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            Checkbox();
-        }
-
-        private void checkBox2_CheckStateChanged(object sender, EventArgs e)
-        {
-            Checkbox();
-        }
-        private void Checkbox()
-        {
-            if (checkBox2.Checked == true)
+            String text = textBox1.Text.ToString();
+            dtgv1.Rows.Clear();
+            responseObj = zabbix.objectResponse("item.get", new
             {
-                Host_Item emailServer = (Host_Item)CBB_ListHost.SelectedItem;
-                int host = Convert.ToInt32(emailServer.Value.ToString());
-                dtgv1.Rows.Clear();
-                responseObj = zabbix.objectResponse("item.get", new
+                output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock", "key_" },
+                hostids = hostid,
+                search = new
                 {
-                    output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock", "key_" },
-                    hostids = host,
-                });
+                    description = text,
+                }
+            });
+            addDatagridview(responseObj.result);
+        }
 
-                foreach (dynamic data in responseObj.result)
+        private void addDatagridview(dynamic result)
+        {
+            foreach (dynamic data in result)
+            {
+                String description = data.description, value = data.lastvalue;
+                String thoigian = UnixTimestampToDateTime(Convert.ToDouble(data.lastclock));
+                String key = data.key_;
+                string[] collection = key.Split('.');
+                if (collection.Length > 1)
                 {
-                    String description = data.description, value = data.lastvalue;
-                    String thoigian = UnixTimestampToDateTime(Convert.ToDouble(data.lastclock));
-                    String key = data.key_;
-                    string[] collection = key.Split('.');
-                    if (collection.Length > 1)
-                    {
-                        key = collection[0] + collection[1];
-                    }
+                    key = collection[0] + "." + collection[1];
+                }
 
 
-                    //display if no data
-                    if (description == "")
+                //display if no data
+                if (description == "")
+                {
+                    description = "no data";
+                    if (value == "0")
                     {
-                        description = "no data";
-                        if (value == "0")
-                        {
-                            value = "no data";
-                        }
-                    }
-                    if (value != "no data")
-                    {
-                        dtgv1.Rows.Add(data.itemid, data.name, description, value, key, thoigian);
+                        value = "no data";
                     }
                 }
+
+
+                dtgv1.Rows.Add(data.itemid, data.name, description, value, key, thoigian);
             }
-            else
+        }
+
+        private void cbbKey_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            String text = cbbKey.GetItemText(cbbKey.SelectedItem);
+            dtgv1.Rows.Clear();
+            responseObj = zabbix.objectResponse("item.get", new
             {
-                Host_Item emailServer = (Host_Item)CBB_ListHost.SelectedItem;
-                int host = Convert.ToInt32(emailServer.Value.ToString());
-                LoadDatagridView(host);
-            }
+                output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock", "key_" },
+                hostids = hostid,
+                search = new
+                {
+                    key_ = text,
+                }
+            });
+            addDatagridview(responseObj.result);
+
         }
     }
 }
