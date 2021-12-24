@@ -14,18 +14,16 @@ namespace PBL
 {
     public partial class Graph : Form
     {
-        private static String ip_address;
         private static String Chartname = "";
         private static String valuetype = "3";
         private static int itemid;
         Zabbix zabbix = null;
         Response responseObj = null;
-        public Graph(String address, int id)
+        public Graph(Zabbix z, int id)
         {
             InitializeComponent();
-            ip_address = address;
+            zabbix = z;
             itemid = id;
-            zabbix = new Zabbix("Admin", "zabbix", ip_address);
             zabbix.login();
 
             LoadGraphName();
@@ -54,17 +52,21 @@ namespace PBL
             responseObj = zabbix.objectResponse("history.get", new
             {
                 itemids = itemid,
-                limit = 10,
+                limit = 25,
+                sortfield = "clock",
+                sortorder = "DESC",
                 history = valuetype
             });
             int i = 0;
             String s = null;
             foreach(dynamic data in responseObj.result)
             {
-                chart1.Series[Chartname].Points.AddXY(i, Convert.ToInt32(data.value));
+
+                chart1.Series[Chartname].Points.AddXY(UnixTimestampToHourMinutes(Convert.ToDouble(data.clock)), Convert.ToDouble(data.value));
                 s = data.clock;
+                i++;
             }
-            chart1.ChartAreas["ChartArea1"].AxisX.Title = "Time from " + UnixTimestampToDateTime(Convert.ToDouble(responseObj.result[0].clock)) + " to " + UnixTimestampToDateTime(Convert.ToDouble(s));
+            chart1.ChartAreas["ChartArea1"].AxisX.Title = "Time from "  + UnixTimestampToDateTime(Convert.ToDouble(s)) + " to " + UnixTimestampToDateTime(Convert.ToDouble(responseObj.result[0].clock));
 
         }
         private String UnixTimestampToDateTime(double unixTime)
@@ -77,6 +79,18 @@ namespace PBL
             long unixTimeStampInTicks = (long)(unixTime * TimeSpan.TicksPerSecond);
             DateTime dt = new DateTime(unixStart.Ticks + unixTimeStampInTicks, System.DateTimeKind.Utc);
             return dt.ToString();
+        }
+
+        private String UnixTimestampToHourMinutes(double unixTime)
+        {
+            if (unixTime < 1007432428)
+            {
+                return "no data";
+            }
+            DateTime unixStart = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            long unixTimeStampInTicks = (long)(unixTime * TimeSpan.TicksPerSecond);
+            DateTime dt = new DateTime(unixStart.Ticks + unixTimeStampInTicks, System.DateTimeKind.Utc);
+            return dt.Hour.ToString() + ":" + dt.Minute.ToString();
         }
     }
 }

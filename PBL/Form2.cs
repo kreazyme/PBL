@@ -18,15 +18,13 @@ namespace PBL
     public partial class Form2 : Form
     {
 
-        private String ip_address = null;
         private int hostid;
         Zabbix zabbix = null;
         Response responseObj = null;
-        public Form2(String ip)
+        public Form2(Zabbix z)
         {
             InitializeComponent();
-            this.ip_address = ip;
-            zabbix = new Zabbix("Admin", "zabbix", ip_address);
+            zabbix = z;
             zabbix.login();
 
 
@@ -57,32 +55,35 @@ namespace PBL
         }
 
 
-        public void LoadDatagridView()
+        public void LoadDatagridView(int host)
         {
             responseObj = zabbix.objectResponse("item.get", new
             {
-                output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock" },
-                hostids = 10084,
+                output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock", "key_" },
+                hostids = host,
             });
-
-            foreach (dynamic data in responseObj.result)
-            {
-                String description = data.description, value = data.lastvalue;
-                String thoigian = UnixTimestampToDateTime(Convert.ToDouble(data.lastclock));
-
-                //display if no data
-                if(description == "")
-                {
-                    description = "no data";
-                    if(value == "0")
-                    {
-                        value = "no data";
-                    }
-                }
-
-
-                dtgv1.Rows.Add(data.itemid, data.name, description, value, thoigian);
-            }
+            //foreach (dynamic data in responseObj.result)
+            //{
+            //    String key = data.key_;
+            //    string[] collection = key.Split('.');
+            //    if (collection.Length > 1)
+            //    {
+            //        key = collection[0] + "." + collection[1];
+            //    }
+            //    for (int i = 0; i < cbbKey.Items.Count; i++)
+            //    {
+            //        string value = cbbKey.GetItemText(cbbKey.Items[i]);
+            //        if(value == key)
+            //        {
+            //            goto here;
+            //        }
+            //    }
+            //    cbbKey.Items.Add(key);
+            //here:
+            //    int x = 1;
+            //}
+            addDatagridview(responseObj.result);
+                
         }
 
         private void CBB_ListHost_SelectedIndexChanged(object sender, EventArgs e)
@@ -90,7 +91,7 @@ namespace PBL
             dtgv1.Rows.Clear();
             Host_Item emailServer = (Host_Item)CBB_ListHost.SelectedItem;
             hostid = Convert.ToInt32(emailServer.Value.ToString());
-            LoadDatagridView();
+            LoadDatagridView(hostid);
         }
 
 
@@ -103,7 +104,8 @@ namespace PBL
             DateTime unixStart = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             long unixTimeStampInTicks = (long)(unixTime * TimeSpan.TicksPerSecond);
             DateTime dt = new DateTime(unixStart.Ticks + unixTimeStampInTicks, System.DateTimeKind.Utc);
-            return dt.ToString();
+            dt = dt.AddHours(7);
+            return (dt.Hour.ToString() + ":" + dt.Minute.ToString() + " " + dt.Day.ToString() + "/" + dt.Month.ToString() + "/" + dt.Year.ToString());
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -113,53 +115,173 @@ namespace PBL
             {
                 dtgv1.Rows.Clear();
                 hostid = Convert.ToInt32(emailServer.Value.ToString());
-                LoadDatagridView();
+                LoadDatagridView(hostid);
             }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            int rowindex = dtgv1.CurrentCell.RowIndex;
+            String itemid = dtgv1.Rows[rowindex].Cells[0].Value.ToString();
+            if (dtgv1.Rows[rowindex].Cells[3].Value.ToString() == "no data")
+            {
+                GetItemInformation(itemid);
+                return;
+            }
 
+            //get value type
+            responseObj = zabbix.objectResponse("item.get", new
+            {
+                output = new String[] { "value_type" },
+                itemids = itemid,
+            });
+            String valuetype = "";
+            foreach (dynamic data in responseObj.result)
+            {
+                valuetype = data.value_type;
+            }
+
+
+            //Show if not graph
+                GetItemInformation(itemid);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            responseObj = zabbix.objectResponse("problem.get", new
-            {
+            Problems p = new Problems(zabbix);
+            p.Show();
+        }
 
+        private void GetItemInformation(String itemid)
+        {
+            responseObj = zabbix.objectResponse("item.get", new
+            {
+                output = "extend",
+                itemids = itemid,
             });
+            String s = "";
             foreach (dynamic data in responseObj.result)
             {
-
+                try
+                {
+                    s += "Time: " + UnixTimestampToDateTime(Convert.ToDouble(data.lastclock));
+                }
+                catch (Exception exx)
+                {
+                    s += "Time: no data";
+                }
+                s += "\nDescription: " + data.description;
+                s += "\nName: " + data.name;
+                s += "\nSNMP OID: " + data.snmp_oid;
+                s += "\nKey: " + data.key_;
+                s += "\nUnit: " + data.units;
             }
-            //Problems p = new Problems();
-            //p.Show();
+            MessageBox.Show(s, "Information", MessageBoxButtons.OK);
         }
 
         private void dtgv1_DoubleClick(object sender, EventArgs e)
         {
             int rowindex = dtgv1.CurrentCell.RowIndex;
             String itemid = dtgv1.Rows[rowindex].Cells[0].Value.ToString();
-            responseObj = zabbix.objectResponse("history.get", new
+            if(dtgv1.Rows[rowindex].Cells[3].Value.ToString() == "no data")
             {
-                itemids = itemid
-            });
-            if(responseObj.result.Count != 0)
-            {
-                Graph g = new Graph("http://192.168.96.143/zabbix/api_jsonrpc.php", 38692);
-                g.Show();
+                GetItemInformation(itemid);
+                return;
             }
+
+            //get value type
+            responseObj = zabbix.objectResponse("item.get", new
+            {
+                output = new String[] { "value_type" },
+                itemids = itemid,
+            });
+            String valuetype = "";
+            foreach(dynamic data in responseObj.result)
+            {
+                valuetype = data.value_type;
+            }
+
+
+            //Show if not graph
+            if(valuetype == "1")
+            {
+                GetItemInformation(itemid);
+            }
+
+
+            //Show graph
             else
             {
-                //responseObj = zabbix.objectResponse("item.get", new
-                //{
-                //    itemids = itemid
-                //});
-                //foreach(dynamic data in responseObj.result)
-                //{
-                //    MessageBox.Show(data.toString());
-                //}
+                Graph g = new Graph(zabbix, Convert.ToInt32(itemid));
+                g.Show();
             }
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Coming soon", "Notification");
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            String text = textBox1.Text.ToString();
+            dtgv1.Rows.Clear();
+            responseObj = zabbix.objectResponse("item.get", new
+            {
+                output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock", "key_" },
+                hostids = hostid,
+                search = new
+                {
+                    name = text,
+                }
+            });
+            addDatagridview(responseObj.result);
+        }
+
+        private void addDatagridview(dynamic result)
+        {
+            foreach (dynamic data in result)
+            {
+                String description = data.description, value = data.lastvalue;
+                String thoigian = UnixTimestampToDateTime(Convert.ToDouble(data.lastclock));
+                String key = data.key_;
+                string[] collection = key.Split('.');
+                if (collection.Length > 1)
+                {
+                    key = collection[0] + "." + collection[1];
+                }
+
+
+                //display if no data
+                if (description == "")
+                {
+                    description = "no data";
+                    if (value == "0")
+                    {
+                        value = "no data";
+                    }
+                }
+
+
+                dtgv1.Rows.Add(data.itemid, data.name, description, value, key, thoigian);
+            }
+        }
+
+        //private void cbbKey_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    String text = cbbKey.GetItemText(cbbKey.SelectedItem);
+        //    dtgv1.Rows.Clear();
+        //    responseObj = zabbix.objectResponse("item.get", new
+        //    {
+        //        output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock", "key_" },
+        //        hostids = hostid,
+        //        search = new
+        //        {
+        //            key_ = text,
+        //        }
+        //    });
+        //    addDatagridview(responseObj.result);
+
+        //}
     }
 }

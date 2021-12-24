@@ -78,6 +78,7 @@ namespace PBL
             this.txtIP1.Name = "txtIP1";
             this.txtIP1.Size = new System.Drawing.Size(46, 27);
             this.txtIP1.TabIndex = 1;
+            this.txtIP1.Text = "192";
             this.txtIP1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtIP1.TextChanged += new System.EventHandler(this.txtIP1_TextChanged);
             // 
@@ -91,6 +92,7 @@ namespace PBL
             this.txtIP2.Name = "txtIP2";
             this.txtIP2.Size = new System.Drawing.Size(46, 27);
             this.txtIP2.TabIndex = 2;
+            this.txtIP2.Text = "168";
             this.txtIP2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtIP2.TextChanged += new System.EventHandler(this.txtIP2_TextChanged);
             // 
@@ -104,6 +106,7 @@ namespace PBL
             this.txtIP3.Name = "txtIP3";
             this.txtIP3.Size = new System.Drawing.Size(46, 27);
             this.txtIP3.TabIndex = 3;
+            this.txtIP3.Text = "96";
             this.txtIP3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtIP3.TextChanged += new System.EventHandler(this.txtIP3_TextChanged);
             // 
@@ -117,6 +120,7 @@ namespace PBL
             this.txtIP4.Name = "txtIP4";
             this.txtIP4.Size = new System.Drawing.Size(46, 27);
             this.txtIP4.TabIndex = 4;
+            this.txtIP4.Text = "143";
             this.txtIP4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtIP4.TextChanged += new System.EventHandler(this.txtIP4_TextChanged);
             // 
@@ -160,6 +164,7 @@ namespace PBL
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(239, 27);
             this.txtUsername.TabIndex = 10;
+            this.txtUsername.Text = "Admin";
             // 
             // label2
             // 
@@ -208,6 +213,8 @@ namespace PBL
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(239, 27);
             this.txtPassword.TabIndex = 15;
+            this.txtPassword.Text = "zabbix";
+            this.txtPassword.UseSystemPasswordChar = true;
             // 
             // pictureBox3
             // 
