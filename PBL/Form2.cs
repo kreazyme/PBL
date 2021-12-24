@@ -62,26 +62,26 @@ namespace PBL
                 output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock", "key_" },
                 hostids = host,
             });
-            foreach (dynamic data in responseObj.result)
-            {
-                String key = data.key_;
-                string[] collection = key.Split('.');
-                if (collection.Length > 1)
-                {
-                    key = collection[0] + "." + collection[1];
-                }
-                for (int i = 0; i < cbbKey.Items.Count; i++)
-                {
-                    string value = cbbKey.GetItemText(cbbKey.Items[i]);
-                    if(value == key)
-                    {
-                        goto here;
-                    }
-                }
-                cbbKey.Items.Add(key);
-            here:
-                int x = 1;
-            }
+            //foreach (dynamic data in responseObj.result)
+            //{
+            //    String key = data.key_;
+            //    string[] collection = key.Split('.');
+            //    if (collection.Length > 1)
+            //    {
+            //        key = collection[0] + "." + collection[1];
+            //    }
+            //    for (int i = 0; i < cbbKey.Items.Count; i++)
+            //    {
+            //        string value = cbbKey.GetItemText(cbbKey.Items[i]);
+            //        if(value == key)
+            //        {
+            //            goto here;
+            //        }
+            //    }
+            //    cbbKey.Items.Add(key);
+            //here:
+            //    int x = 1;
+            //}
             addDatagridview(responseObj.result);
                 
         }
@@ -232,7 +232,7 @@ namespace PBL
                 hostids = hostid,
                 search = new
                 {
-                    description = text,
+                    name = text,
                 }
             });
             addDatagridview(responseObj.result);
@@ -267,21 +267,21 @@ namespace PBL
             }
         }
 
-        private void cbbKey_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            String text = cbbKey.GetItemText(cbbKey.SelectedItem);
-            dtgv1.Rows.Clear();
-            responseObj = zabbix.objectResponse("item.get", new
-            {
-                output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock", "key_" },
-                hostids = hostid,
-                search = new
-                {
-                    key_ = text,
-                }
-            });
-            addDatagridview(responseObj.result);
+        //private void cbbKey_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    String text = cbbKey.GetItemText(cbbKey.SelectedItem);
+        //    dtgv1.Rows.Clear();
+        //    responseObj = zabbix.objectResponse("item.get", new
+        //    {
+        //        output = new String[] { "itemid", "name", "description", "lastvalue", "lastclock", "key_" },
+        //        hostids = hostid,
+        //        search = new
+        //        {
+        //            key_ = text,
+        //        }
+        //    });
+        //    addDatagridview(responseObj.result);
 
-        }
+        //}
     }
 }

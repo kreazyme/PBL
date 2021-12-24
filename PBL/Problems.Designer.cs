@@ -36,7 +36,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.dtgv1 = new System.Windows.Forms.DataGridView();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel1.SuspendLayout();
@@ -50,7 +49,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(876, 81);
+            this.panel1.Size = new System.Drawing.Size(769, 81);
             this.panel1.TabIndex = 0;
             // 
             // label1
@@ -78,7 +77,6 @@
             this.dtgv1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dtgv1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column4,
-            this.Column1,
             this.Column2,
             this.Column5});
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -106,7 +104,7 @@
             this.dtgv1.RowHeadersVisible = false;
             this.dtgv1.RowHeadersWidth = 51;
             this.dtgv1.RowTemplate.Height = 24;
-            this.dtgv1.Size = new System.Drawing.Size(876, 458);
+            this.dtgv1.Size = new System.Drawing.Size(769, 458);
             this.dtgv1.TabIndex = 7;
             // 
             // Column4
@@ -115,13 +113,6 @@
             this.Column4.MinimumWidth = 6;
             this.Column4.Name = "Column4";
             this.Column4.Width = 90;
-            // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "Hostname";
-            this.Column1.MinimumWidth = 6;
-            this.Column1.Name = "Column1";
-            this.Column1.Width = 90;
             // 
             // Column2
             // 
@@ -141,7 +132,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(876, 539);
+            this.ClientSize = new System.Drawing.Size(769, 539);
             this.Controls.Add(this.dtgv1);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -161,7 +152,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dtgv1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
     }

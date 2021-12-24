@@ -54,16 +54,10 @@ namespace PBL
                 {
                     evetids = s,
                     limit = 10,
-                    selectedhosts = new string[]
-                    {
-                        "name",
-                        "hostid",
-                    },
+                    selectedhosts = "extend"
 
                 });
-                //hostname = responseobj2.result.hosts.name;
-                hostname = "unknown";
-                dtgv1.Rows.Add(data.severity, hostname, data.name, date);
+                dtgv1.Rows.Add(data.severity, data.name, date);
 
 
 
